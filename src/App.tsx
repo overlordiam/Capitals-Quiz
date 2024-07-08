@@ -26,14 +26,14 @@ const App: React.FC = () => {
     setLoading(true);
     const dataFromAPI = await fetchData();
     const shuffledData = shuffleArray(dataFromAPI);
-    setData(shuffledData);
+    setData([...shuffledData]);
     setScore(0);
     setQuestionNumber(0);
     setUserAnswers([]);
     setLoading(false);
   };
 
-  const checkAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const checkAnswer = (e: any) => {
     if (!gameOver) {
       const answer = e.currentTarget.value;
       const isCorrect = answer === data[questionNumber].capital;
@@ -45,10 +45,10 @@ const App: React.FC = () => {
         question: data[questionNumber].question,
         userAnswer: answer,
         correctAnswer: data[questionNumber].capital,
-        isCorrect,
+        isCorrect
       };
 
-      setUserAnswers(prev => [...prev, answerOb]);
+      setUserAnswers((prev) => [...prev, answerOb]);
     }
   };
 
@@ -57,25 +57,26 @@ const App: React.FC = () => {
     if (nextQuestionNumber === TOTAL_QUESTIONS) {
       setGameOver(true);
     } else {
-      setQuestionNumber(nextQuestionNumber);
+      setQuestionNumber(prev => prev + 1);
     }
   };
 
   return (
-    <div className="flex flex-col items-center p-4 min-h-screen bg-gradient-to-br from-blue-200 via-white to-blue-300">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">WELCOME TO THE QUIZ</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-200 via-white to-blue-300">
+      <h1 className="text-3xl font-bold mb-6">WELCOME TO THE CAPITALS QUIZ</h1>
       {gameOver || userAnswers.length === TOTAL_QUESTIONS ? (
-        <button 
-          onClick={handleStart} 
-          className="bg-blue-500 text-white py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 transition-all"
+        <button
+          className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+          onClick={handleStart}
         >
-          START
+          {!gameOver ? "New Game" : "Start"}
         </button>
       ) : null}
-      {loading && <h3 className="text-lg text-gray-600 mt-4">Loading.....</h3>}
-      {!loading && !gameOver && <h3 className="text-lg text-gray-700 mt-4">Score: {score}</h3>}
+      <br />
+      {loading && <h3>Loading.....</h3>}
+      {!loading && !gameOver && <h3 className="mb-4 text-xl font-bold">Score: {score}</h3>}
       {!gameOver && !loading && (
-        <QuestionCard 
+        <QuestionCard
           questionNumber={questionNumber + 1}
           totalQuestions={TOTAL_QUESTIONS}
           callback={checkAnswer}
@@ -85,9 +86,9 @@ const App: React.FC = () => {
         />
       )}
       {!gameOver && !loading && userAnswers.length === questionNumber + 1 && questionNumber !== TOTAL_QUESTIONS - 1 && (
-        <button 
-          onClick={handleNext} 
-          className="bg-green-500 text-white py-3 px-6 rounded-lg shadow-md hover:bg-green-600 transition-all mt-4"
+        <button
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 mt-4"
+          onClick={handleNext}
         >
           Next Question
         </button>
